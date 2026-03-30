@@ -5,7 +5,7 @@ from datetime import datetime
 from collections import deque
 import pygame
 
-from Classes import Button, Player
+from Classes import Button, Player, resolve_asset_path
 from levels import level
 from shop import shop_menu
 from survival_mode import survival_mode
@@ -78,7 +78,7 @@ def _load_hub_background():
     ]
     for path in candidates:
         try:
-            return pygame.image.load(path).convert()
+            return pygame.image.load(resolve_asset_path(path)).convert()
         except Exception:
             continue
     fallback = pygame.Surface((screen_width, screen_height))
@@ -631,7 +631,7 @@ def play_menu(player_name):
     bg_tile = pygame.transform.scale(bg_base, (screen_width, screen_height))
 
     back_size = max(24, int(screen_width * 0.04))
-    back_image = pygame.image.load("back button.jpg").convert_alpha()
+    back_image = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_image = pygame.transform.scale(back_image, (back_size, back_size))
     back_button = Button(10, 10, back_image)
 

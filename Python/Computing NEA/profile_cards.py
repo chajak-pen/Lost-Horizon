@@ -1,6 +1,6 @@
 import pygame
 
-from Classes import Button
+from Classes import Button, resolve_asset_path
 from ui_helpers import fit_text, draw_wrapped_text
 from database import (
     create_connection,
@@ -39,7 +39,7 @@ def profile_card_screen(player_name):
     small_font = pygame.font.SysFont("Arial", 20)
 
     back_size = max(24, int(sw * 0.04))
-    back_img = pygame.image.load("back button.jpg").convert_alpha()
+    back_img = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_img = pygame.transform.scale(back_img, (back_size, back_size))
     back_button = Button(10, 10, back_img)
 

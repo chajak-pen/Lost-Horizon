@@ -1,7 +1,7 @@
 import pygame
 import random
 import os
-from Classes import Text, Button
+from Classes import Text, Button, resolve_asset_path
 from seasonal_events import get_active_event
 from progression_hub import progression_hub_screen
 from database import (
@@ -32,9 +32,10 @@ screen_width, screen_height = info.current_w, info.current_h
 def _load_screen_background(size, primary_name):
     sw, sh = size
     for path in (primary_name, "background.jpg", "background.png"):
-        if os.path.exists(path):
+        resolved_path = resolve_asset_path(path)
+        if os.path.exists(resolved_path):
             try:
-                img = pygame.image.load(path).convert_alpha()
+                img = pygame.image.load(resolved_path).convert_alpha()
                 return pygame.transform.scale(img, (sw, sh))
             except Exception:
                 continue
@@ -53,7 +54,7 @@ def blackjack_screen(player_name, conn, get_balance=None, add_balance=None, subt
     background = _load_screen_background((sw, sh), "blackjack_background.png")
 
     back_size = max(24, int(sw * 0.04))
-    back_img  = pygame.image.load("back button.jpg").convert_alpha()
+    back_img  = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_img  = pygame.transform.scale(back_img, (back_size, back_size))
     back_button = Button(10, 10, back_img)
 
@@ -444,7 +445,7 @@ def roulette_screen(player_name, conn, get_balance=None, add_balance=None, subtr
     background = _load_screen_background((sw, sh), "roulette_background.png")
 
     back_size = max(24, int(sw * 0.04))
-    back_img  = pygame.image.load("back button.jpg").convert_alpha()
+    back_img  = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_img  = pygame.transform.scale(back_img, (back_size, back_size))
     back_button = Button(10, 10, back_img)
 
@@ -819,7 +820,7 @@ def slot_machine_screen(player_name, conn, get_balance=None, add_balance=None, s
 
     # Back button
     back_size = max(24, int(sw * 0.04))
-    back_img = pygame.image.load("back button.jpg").convert_alpha()
+    back_img = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_img = pygame.transform.scale(back_img, (back_size, back_size))
     back_button = Button(10, 10, back_img)
 
@@ -1021,7 +1022,7 @@ def skins_screen(player_name, conn):
     background = _load_screen_background((sw, sh), "shop_background.png")
 
     back_size = max(24, int(sw * 0.04))
-    back_img = pygame.image.load("back button.jpg").convert_alpha()
+    back_img = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_img = pygame.transform.scale(back_img, (back_size, back_size))
     back_button = Button(10, 10, back_img)
 
@@ -1179,17 +1180,17 @@ def shop_menu(player_name=None):
     back_size = max(24, int(screen_width * 0.04))
     btn_size = max(48, int(screen_width * 0.10))
 
-    back_img = pygame.image.load("back button.jpg").convert_alpha()
+    back_img = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_img = pygame.transform.scale(back_img, (back_size, back_size))
     back_button = Button(10, 10, back_img)
 
-    float_img = pygame.image.load("float_power.png").convert_alpha()
+    float_img = pygame.image.load(resolve_asset_path("float_power.png")).convert_alpha()
     float_img = pygame.transform.scale(float_img, (btn_size, btn_size))
-    invincibility_img = pygame.image.load("invincibility.png").convert_alpha()
+    invincibility_img = pygame.image.load(resolve_asset_path("invincibility.png")).convert_alpha()
     invincibility_img = pygame.transform.scale(invincibility_img, (btn_size, btn_size))
-    fire_img = pygame.image.load("fire_flower.png").convert_alpha()
+    fire_img = pygame.image.load(resolve_asset_path("fire_flower.png")).convert_alpha()
     fire_img = pygame.transform.scale(fire_img, (btn_size, btn_size))
-    lives_img = pygame.image.load("life.png").convert_alpha()
+    lives_img = pygame.image.load(resolve_asset_path("life.png")).convert_alpha()
     lives_img = pygame.transform.scale(lives_img, (btn_size, btn_size))
 
     row_y = int(screen_height * 0.21)

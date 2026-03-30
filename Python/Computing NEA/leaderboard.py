@@ -1,5 +1,5 @@
 import pygame
-from Classes import Button
+from Classes import Button, resolve_asset_path
 from level_data import LEVELS
 from ui_helpers import fit_text, draw_wrapped_text
 from database import (
@@ -36,7 +36,7 @@ def leaderboard_screen(player_name=None):
 
     back_size = max(24, int(sw * 0.04))
     try:
-        back_img = pygame.image.load("back button.jpg").convert_alpha()
+        back_img = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
         back_img = pygame.transform.scale(back_img, (back_size, back_size))
         back_button = Button(10, 10, back_img)
     except Exception:

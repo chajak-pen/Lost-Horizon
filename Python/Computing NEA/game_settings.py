@@ -1,8 +1,22 @@
 import os, json
 import pygame
 
-SETTINGS_FILE = "settings.json"
-MUSIC_PATH = "background_music.mp3"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(BASE_DIR)
+
+
+def _resolve_local_path(path):
+    if os.path.isabs(path):
+        return path
+    for root in (BASE_DIR, PARENT_DIR):
+        candidate = os.path.join(root, path)
+        if os.path.exists(candidate):
+            return candidate
+    return os.path.join(BASE_DIR, path)
+
+
+SETTINGS_FILE = _resolve_local_path("settings.json")
+MUSIC_PATH = _resolve_local_path("background_music.mp3")
 
 KEY_NAME_ALIASES = {
     "lshift": "left shift",

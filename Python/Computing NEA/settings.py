@@ -1,9 +1,9 @@
 import os
 import pygame
-from Classes import Text, Button
+from Classes import Text, Button, resolve_asset_path
 from game_settings import load_settings, save_settings, MUSIC_PATH, DEFAULT_KEYBINDS
 from database import is_hard_mode_unlocked, is_hard_mode_enabled, set_hard_mode, create_connection
-from ui_helpers import draw_tab_button, draw_card_panel, draw_wrapped_text
+from ui_helpers import draw_tab_button, draw_card_panel, draw_wrapped_text, load_system_cursor, apply_hover_cursor
 
 pygame.init()
 
@@ -133,9 +133,10 @@ def settings_menu(player_name=None):
 
     background = None
     for bg_path in ("settings_background.png", "background.jpg", "background.png"):
-        if os.path.exists(bg_path):
+        resolved_bg_path = resolve_asset_path(bg_path)
+        if os.path.exists(resolved_bg_path):
             try:
-                background = pygame.image.load(bg_path).convert_alpha()
+                background = pygame.image.load(resolved_bg_path).convert_alpha()
                 background = pygame.transform.scale(background, (screen_width, screen_height))
                 break
             except Exception:
@@ -148,7 +149,7 @@ def settings_menu(player_name=None):
     sx = screen_width / 1000.0
     sy = screen_height / 600.0
     back_size = max(24, int(screen_width * 0.04))
-    back_image = pygame.image.load("back button.jpg").convert_alpha()
+    back_image = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_image = pygame.transform.scale(back_image, (back_size, back_size))
     back_button = Button(int(15 * sx), int(15 * sy), back_image)
     
@@ -259,8 +260,9 @@ def settings_menu(player_name=None):
     dragging_music_slider = False
     dragging_sfx_slider = False
 
-    hand_cursor = pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_HAND)
-    arrow_cursor = pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_ARROW)
+    hand_cursor = load_system_cursor(pygame.SYSTEM_CURSOR_HAND)
+    arrow_cursor = load_system_cursor(pygame.SYSTEM_CURSOR_ARROW)
+    current_cursor = None
     mouse_pos = (0, 0)
 
     running = True
@@ -289,10 +291,7 @@ def settings_menu(player_name=None):
         hovering_toggle = any(r.collidepoint(mouse_pos) for r in interactive)
         
         # Set cursor based on hover
-        if hovering_toggle:
-            pygame.mouse.set_cursor(hand_cursor)
-        else:
-            pygame.mouse.set_cursor(arrow_cursor)
+        current_cursor = apply_hover_cursor(hovering_toggle, hand_cursor, arrow_cursor, current_cursor)
         
         settings_screen.blit(background, (0, 0))
         

@@ -8,7 +8,8 @@ import json
 from datetime import date
 
 # Default database filename
-DB_FILE = "scores_and_times.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, "scores_and_times.db")
 
 CASINO_DAILY_CHIP_BONUS = 25
 CASINO_BUY_IN_COIN_COST = 12

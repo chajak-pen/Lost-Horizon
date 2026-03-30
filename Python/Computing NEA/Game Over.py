@@ -1,5 +1,5 @@
 import pygame
-from Classes import Text, AnimatedText, Button
+from Classes import Text, AnimatedText, Button, resolve_asset_path
 
 pygame.init()
 
@@ -11,7 +11,7 @@ def game_over_screen(player_score=None, level=None):
     game_over_screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("Lost Horizon - Game Over")
 
-    background = pygame.image.load("background.jpg").convert_alpha()
+    background = pygame.image.load(resolve_asset_path("background.jpg")).convert_alpha()
     background = pygame.transform.scale(background, (screen_width, screen_height))
     
     # scale UI
@@ -25,10 +25,10 @@ def game_over_screen(player_score=None, level=None):
     button_w = max(48, int(screen_width * 0.20))
     button_h = max(24, int(screen_height * 0.1667))
     
-    retry_image = pygame.image.load("play button.png").convert_alpha()
+    retry_image = pygame.image.load(resolve_asset_path("play button.png")).convert_alpha()
     retry_image = pygame.transform.scale(retry_image, (button_w, button_h))
     
-    quit_image = pygame.image.load("exit game.png").convert_alpha()
+    quit_image = pygame.image.load(resolve_asset_path("exit game.png")).convert_alpha()
     quit_image = pygame.transform.scale(quit_image, (button_w, button_h))
     
     # Center buttons horizontally

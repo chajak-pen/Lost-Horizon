@@ -1,6 +1,29 @@
 import pygame
 
 
+def load_system_cursor(cursor_type):
+    try:
+        return pygame.cursors.Cursor(cursor_type)
+    except Exception:
+        return None
+
+
+def apply_hover_cursor(is_hovering, hand_cursor, arrow_cursor, current_cursor=None):
+    desired_cursor = "hand" if is_hovering else "arrow"
+    if desired_cursor == current_cursor:
+        return current_cursor
+
+    cursor = hand_cursor if is_hovering else arrow_cursor
+    if cursor is None:
+        return current_cursor
+
+    try:
+        pygame.mouse.set_cursor(cursor)
+        return desired_cursor
+    except Exception:
+        return current_cursor
+
+
 def draw_tab_button(surface, rect, text, font, active=False):
     fill = (64, 100, 148) if active else (30, 52, 86)
     border = (170, 220, 255) if active else (90, 130, 185)

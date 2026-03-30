@@ -1,7 +1,8 @@
 import os
 import pygame
+from Classes import resolve_asset_path
 from database import create_connection, initialize_database, register_player, authenticate_player
-from ui_helpers import draw_wrapped_text
+from ui_helpers import draw_wrapped_text, load_system_cursor, apply_hover_cursor
 
 pygame.init()
 initialize_database()
@@ -53,9 +54,10 @@ def authenticate_player_screen():
 
     bg = None
     for bg_path in ("login_background.png", "background.jpg", "background.png"):
-        if os.path.exists(bg_path):
+        resolved_bg_path = resolve_asset_path(bg_path)
+        if os.path.exists(resolved_bg_path):
             try:
-                bg = pygame.image.load(bg_path).convert_alpha()
+                bg = pygame.image.load(resolved_bg_path).convert_alpha()
                 bg = pygame.transform.scale(bg, (info.current_w, info.current_h))
                 break
             except Exception:
@@ -145,8 +147,9 @@ def authenticate_player_screen():
         return None
 
     clock = pygame.time.Clock()
-    hand_cursor = pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_HAND)
-    arrow_cursor = pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_ARROW)
+    hand_cursor = load_system_cursor(pygame.SYSTEM_CURSOR_HAND)
+    arrow_cursor = load_system_cursor(pygame.SYSTEM_CURSOR_ARROW)
+    current_cursor = None
     
     while True:
         mouse_pos = pygame.mouse.get_pos()
@@ -187,10 +190,12 @@ def authenticate_player_screen():
             exit_hover = exit_btn.collidepoint(mouse_pos)
             
             # Set cursor based on hover
-            if login_hover or register_hover or exit_hover:
-                pygame.mouse.set_cursor(hand_cursor)
-            else:
-                pygame.mouse.set_cursor(arrow_cursor)
+            current_cursor = apply_hover_cursor(
+                login_hover or register_hover or exit_hover,
+                hand_cursor,
+                arrow_cursor,
+                current_cursor,
+            )
             
             _draw_button(screen, login_btn, "Login", button_font, fill=(40, 80, 130), border=(100, 180, 255), hover=login_hover)
             _draw_button(screen, register_btn, "Register", button_font, fill=(40, 130, 80), border=(100, 255, 150), hover=register_hover)
@@ -221,10 +226,7 @@ def authenticate_player_screen():
             back_hover = back_btn.collidepoint(mouse_pos)
             
             # Set cursor based on button hover
-            if show_pass_hover or submit_hover or back_hover:
-                pygame.mouse.set_cursor(hand_cursor)
-            else:
-                pygame.mouse.set_cursor(arrow_cursor)
+            hovering_control = show_pass_hover or submit_hover or back_hover
             
             _draw_button(
                 screen,
@@ -251,8 +253,7 @@ def authenticate_player_screen():
                 show_confirm_hover = show_confirm_rect.collidepoint(mouse_pos)
                 
                 # Update cursor if show_confirm_password button is hovered
-                if show_confirm_hover:
-                    pygame.mouse.set_cursor(hand_cursor)
+                hovering_control = hovering_control or show_confirm_hover
                 
                 _draw_button(
                     screen,
@@ -273,6 +274,13 @@ def authenticate_player_screen():
                     line_gap=2,
                     max_lines=2,
                 )
+
+            current_cursor = apply_hover_cursor(
+                hovering_control,
+                hand_cursor,
+                arrow_cursor,
+                current_cursor,
+            )
 
             _draw_button(screen, submit_btn, "Submit", button_font, fill=(30, 100, 50), border=(100, 255, 150), hover=submit_hover)
             _draw_button(screen, back_btn, "Back", button_font, fill=(50, 50, 60), border=(150, 150, 180), hover=back_hover)

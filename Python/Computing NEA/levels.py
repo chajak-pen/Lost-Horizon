@@ -61,21 +61,24 @@ try:
 except Exception:
     pass
 
+
+def _mixer_ready():
+    return pygame.mixer.get_init() is not None
+
 JUMP_SFX_PATH = os.path.join(os.path.dirname(__file__), "..", "jump_sfx.mp3")
-try:
-    if os.path.exists(JUMP_SFX_PATH):
+if _mixer_ready() and os.path.exists(JUMP_SFX_PATH):
+    try:
         JUMP_SFX = pygame.mixer.Sound(JUMP_SFX_PATH)
         # Volume will be set from settings when playing
-    else:
+    except Exception:
         JUMP_SFX = None
-except Exception as e:
-    print(f"Warning: Could not load jump sound: {e}")
+else:
     JUMP_SFX = None
 
 def _load_sfx(filename):
     path = os.path.join(os.path.dirname(__file__), "..", filename)
     try:
-        if os.path.exists(path):
+        if _mixer_ready() and os.path.exists(path):
             return pygame.mixer.Sound(path)
     except Exception:
         pass
@@ -1500,9 +1503,9 @@ def level(level_id, player_name, challenge_code=None, level_config_override=None
             else:
                 checkpoints = _auto_section_checkpoints(level_config, platforms)
             hud_life_img = pygame.transform.scale(
-                pygame.image.load('life.png').convert_alpha(), (22, 22))
+                pygame.image.load(resolve_asset_path('life.png')).convert_alpha(), (22, 22))
             hud_coin_img = pygame.transform.scale(
-                pygame.image.load('coin.png').convert_alpha(), (22, 22))
+                pygame.image.load(resolve_asset_path('coin.png')).convert_alpha(), (22, 22))
 
             warn_font = pygame.font.SysFont("Arial", 18, bold=True)
             bar_label_font = pygame.font.SysFont("Arial", 16)

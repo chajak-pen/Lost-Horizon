@@ -14,6 +14,7 @@ from casino import casino_screen
 from auth import authenticate_player_screen
 import os
 from game_settings import load_settings, MUSIC_PATH
+from ui_helpers import load_system_cursor, apply_hover_cursor
 
 pygame.init() #This intiializes all of the pygame modules
 
@@ -44,7 +45,7 @@ def start_menu():
     start_screen = pygame.display.set_mode((screen_width, screen_height)) #creates a 1000x600 pixel window
     pygame.display.set_caption("Lost Horizon") #sets the title of the game to "Lost Horizon"
     
-    ground_surface = pygame.image.load('groound 3.jpg').convert_alpha() #loads the background image
+    ground_surface = pygame.image.load(resolve_asset_path('groound 3.jpg')).convert_alpha() #loads the background image
     ground_surface = pygame.transform.scale(ground_surface, (screen_width, screen_height))
 
     # compute button sizes relative to screen and scale images
@@ -72,7 +73,7 @@ def start_menu():
     exit_surface = make_main_button_surface("EXIT", "quit game", (96, 34, 40), (255, 150, 150))
     exit_hover_surface = make_main_button_surface("EXIT", "quit game", (118, 44, 52), (255, 175, 175))
 
-    settings_image = pygame.image.load("settings button.jpeg").convert_alpha()
+    settings_image = pygame.image.load(resolve_asset_path("settings button.jpeg")).convert_alpha()
     settings_size = max(24, int(screen_width * 0.04))
     settings_image = pygame.transform.scale(settings_image, (settings_size, settings_size))
 
@@ -222,8 +223,9 @@ def start_menu():
     subtitle_font = pygame.font.SysFont("Arial", max(20, int(28 * (screen_height / 600.0))))
     
     mouse_pos = (0, 0)
-    hand_cursor = pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_HAND)
-    arrow_cursor = pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_ARROW)
+    hand_cursor = load_system_cursor(pygame.SYSTEM_CURSOR_HAND)
+    arrow_cursor = load_system_cursor(pygame.SYSTEM_CURSOR_ARROW)
+    current_cursor = None
 
     def draw_main_card_button(button, normal_surface, hover_surface):
         hovered = button.rect.collidepoint(mouse_pos)
@@ -252,10 +254,7 @@ def start_menu():
                           exit_button.rect.collidepoint(mouse_pos))
         
         # Change cursor based on hover
-        if hovering_button:
-            pygame.mouse.set_cursor(hand_cursor)
-        else:
-            pygame.mouse.set_cursor(arrow_cursor)
+        current_cursor = apply_hover_cursor(hovering_button, hand_cursor, arrow_cursor, current_cursor)
         
         start_screen.blit(ground_surface, (0,0)) #draws the background image at the top left corner
         
@@ -449,12 +448,15 @@ def start_menu():
 
 
 if __name__ == "__main__":
-    start_menu()
-    pygame.display.update()
-
-try:
-    pygame.mixer.music.stop()
-except Exception:
-    pass
-
-pygame.quit()
+    try:
+        start_menu()
+        pygame.display.update()
+    except KeyboardInterrupt:
+        # Allow Ctrl+C to exit cleanly without a traceback.
+        pass
+    finally:
+        try:
+            pygame.mixer.music.stop()
+        except Exception:
+            pass
+        pygame.quit()

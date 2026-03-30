@@ -1,5 +1,5 @@
 import pygame
-from Classes import Text, Button
+from Classes import Text, Button, resolve_asset_path
 from ui_helpers import fit_text, draw_wrapped_text
 
 pygame.init()
@@ -14,7 +14,7 @@ def win_screen(player_score=None, top_times=None, top_scores=None, is_new_score_
     win_screen = pygame.display.set_mode((screen_width, screen_height)) #creates a 1000x600 pixel window
     pygame.display.set_caption("Lost Horizon - You Win!") #sets the title of the game to "Lost Horizon - You Win!"
 
-    background = pygame.image.load("background.jpg").convert_alpha() #loads the background image
+    background = pygame.image.load(resolve_asset_path("background.jpg")).convert_alpha() #loads the background image
     background = pygame.transform.scale(background, (screen_width, screen_height))
     # scale UI
     sx = screen_width / 1000.0

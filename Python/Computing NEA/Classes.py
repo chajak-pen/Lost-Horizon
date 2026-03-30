@@ -8,6 +8,7 @@ screen_width = 1000
 screen_height = 439 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(BASE_DIR)
 
 
 def resolve_asset_path(path):
@@ -17,6 +18,10 @@ def resolve_asset_path(path):
         return path
     if os.path.exists(path):
         return path
+    for root in (BASE_DIR, PARENT_DIR):
+        candidate = os.path.join(root, path)
+        if os.path.exists(candidate):
+            return candidate
     return os.path.join(BASE_DIR, path)
 
 

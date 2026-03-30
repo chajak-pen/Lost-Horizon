@@ -4,7 +4,7 @@ from datetime import date
 
 import pygame
 
-from Classes import Button
+from Classes import Button, resolve_asset_path
 from database import (
     CASINO_REWARD_SHOP,
     CASINO_BUY_IN_CHIP_GAIN,
@@ -66,9 +66,10 @@ CASINO_STAFF = {
 def _load_background(size):
     sw, sh = size
     for path in ("casino_background.png", "shop_background.png", "background.jpg"):
-        if os.path.exists(path):
+        resolved_path = resolve_asset_path(path)
+        if os.path.exists(resolved_path):
             try:
-                img = pygame.image.load(path).convert_alpha()
+                img = pygame.image.load(resolved_path).convert_alpha()
                 return pygame.transform.scale(img, (sw, sh))
             except Exception:
                 continue
@@ -95,7 +96,7 @@ def safecracker_screen(player_name, conn, get_balance, add_balance, subtract_bal
 
     background = _load_background((sw, sh))
     back_size = max(24, int(sw * 0.04))
-    back_img = pygame.image.load("back button.jpg").convert_alpha()
+    back_img = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_img = pygame.transform.scale(back_img, (back_size, back_size))
     back_button = Button(10, 10, back_img)
 
@@ -303,7 +304,7 @@ def casino_screen(player_name):
 
     background = _load_background((sw, sh))
     back_size = max(24, int(sw * 0.04))
-    back_img = pygame.image.load("back button.jpg").convert_alpha()
+    back_img = pygame.image.load(resolve_asset_path("back button.jpg")).convert_alpha()
     back_img = pygame.transform.scale(back_img, (back_size, back_size))
     back_button = Button(10, 10, back_img)
 
