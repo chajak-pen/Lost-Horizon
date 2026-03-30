@@ -1,4 +1,5 @@
 import pygame
+import sys
 from Classes import *
 from play_menu import play_menu
 from shop import shop_menu
@@ -451,6 +452,16 @@ def start_menu():
 
 
 if __name__ == "__main__":
+    driver = pygame.display.get_driver()
+    if driver in {"offscreen", "dummy"} and os.environ.get("ALLOW_OFFSCREEN_PYGAME") != "1":
+        print(
+            "No visible display detected for Pygame (video driver: "
+            f"{driver}). Run this game on a local desktop session, or set "
+            "ALLOW_OFFSCREEN_PYGAME=1 to run headless."
+        )
+        pygame.quit()
+        sys.exit(1)
+
     try:
         start_menu()
         pygame.display.update()
