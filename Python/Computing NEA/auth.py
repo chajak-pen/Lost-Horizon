@@ -2,7 +2,7 @@ import os
 import pygame
 from Classes import resolve_asset_path
 from database import create_connection, initialize_database, register_player, authenticate_player
-from ui_helpers import draw_wrapped_text, load_system_cursor, apply_hover_cursor
+from ui_helpers import draw_wrapped_text, load_system_cursor, apply_hover_cursor, get_safe_display_size
 
 pygame.init()
 initialize_database()
@@ -48,8 +48,8 @@ def _draw_input(screen, rect, value, active, font, hidden=False):
 
 
 def authenticate_player_screen():
-    info = pygame.display.Info()
-    screen = pygame.display.set_mode((info.current_w, info.current_h))
+    screen_w, screen_h = get_safe_display_size()
+    screen = pygame.display.set_mode((screen_w, screen_h), pygame.RESIZABLE)
     pygame.display.set_caption("Lost Horizon - Login")
 
     bg = None
@@ -58,13 +58,13 @@ def authenticate_player_screen():
         if os.path.exists(resolved_bg_path):
             try:
                 bg = pygame.image.load(resolved_bg_path).convert_alpha()
-                bg = pygame.transform.scale(bg, (info.current_w, info.current_h))
+                bg = pygame.transform.scale(bg, (screen_w, screen_h))
                 break
             except Exception:
                 continue
 
-    sx = info.current_w / 1000.0
-    sy = info.current_h / 600.0
+    sx = screen_w / 1000.0
+    sy = screen_h / 600.0
 
     title_font = pygame.font.SysFont("Arial", max(24, int(52 * sy)))
     body_font = pygame.font.SysFont("Arial", max(14, int(28 * sy)))
@@ -72,8 +72,8 @@ def authenticate_player_screen():
 
     panel_w = int(620 * sx)
     panel_h = int(510 * sy)
-    panel_x = (info.current_w - panel_w) // 2
-    panel_y = (info.current_h - panel_h) // 2
+    panel_x = (screen_w - panel_w) // 2
+    panel_y = (screen_h - panel_h) // 2
 
     login_btn = pygame.Rect(panel_x + int(40 * sx), panel_y + int(110 * sy), int(240 * sx), int(62 * sy))
     register_btn = pygame.Rect(panel_x + int(340 * sx), panel_y + int(110 * sy), int(240 * sx), int(62 * sy))
@@ -159,9 +159,9 @@ def authenticate_player_screen():
         else:
             # Draw a gradient-like background with dark colors
             screen.fill((10, 10, 15))
-            for y in range(info.current_h):
-                color_val = int(10 + (y / info.current_h) * 20)
-                pygame.draw.line(screen, (color_val, color_val, color_val + 5), (0, y), (info.current_w, y))
+            for y in range(screen_h):
+                color_val = int(10 + (y / screen_h) * 20)
+                pygame.draw.line(screen, (color_val, color_val, color_val + 5), (0, y), (screen_w, y))
 
         # Draw panel with shadow and gradient effect
         pygame.draw.rect(screen, (0, 0, 0), (panel_x + 4, panel_y + 4, panel_w, panel_h), border_radius=14)

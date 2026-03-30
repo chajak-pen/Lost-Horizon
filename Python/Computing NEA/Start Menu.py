@@ -14,7 +14,7 @@ from casino import casino_screen
 from auth import authenticate_player_screen
 import os
 from game_settings import load_settings, MUSIC_PATH
-from ui_helpers import load_system_cursor, apply_hover_cursor
+from ui_helpers import load_system_cursor, apply_hover_cursor, get_safe_display_size
 
 pygame.init() #This intiializes all of the pygame modules
 
@@ -34,15 +34,18 @@ if music_on and os.path.exists(MUSIC_PATH):
     except Exception:
         pass
 
-info = pygame.display.Info()
-screen_width, screen_height = info.current_w, info.current_h
+screen_width, screen_height = get_safe_display_size()
 
 def start_menu():
+    global screen_width, screen_height
+
     player_name = authenticate_player_screen()
     if player_name is None:
         return False
 
-    start_screen = pygame.display.set_mode((screen_width, screen_height)) #creates a 1000x600 pixel window
+    screen_width, screen_height = get_safe_display_size()
+
+    start_screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE) #creates a 1000x600 pixel window
     pygame.display.set_caption("Lost Horizon") #sets the title of the game to "Lost Horizon"
     
     ground_surface = pygame.image.load(resolve_asset_path('groound 3.jpg')).convert_alpha() #loads the background image

@@ -24,6 +24,15 @@ def apply_hover_cursor(is_hovering, hand_cursor, arrow_cursor, current_cursor=No
         return current_cursor
 
 
+def get_safe_display_size(default=(1000, 600), min_size=(640, 480)):
+    info = pygame.display.Info()
+    width = int(getattr(info, "current_w", 0) or 0)
+    height = int(getattr(info, "current_h", 0) or 0)
+    if width < min_size[0] or height < min_size[1]:
+        return default
+    return width, height
+
+
 def draw_tab_button(surface, rect, text, font, active=False):
     fill = (64, 100, 148) if active else (30, 52, 86)
     border = (170, 220, 255) if active else (90, 130, 185)
